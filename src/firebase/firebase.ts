@@ -10,7 +10,13 @@ import {
     fetchSignInMethodsForEmail,
     linkWithCredential,
 } from 'firebase/auth';
-import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
+import {
+    getFirestore,
+    doc,
+    setDoc,
+    getDoc,
+    updateDoc,
+} from 'firebase/firestore';
 
 const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -41,4 +47,5 @@ export {
     doc,
     setDoc,
     getDoc,
+    updateDoc,
 };

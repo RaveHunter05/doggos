@@ -8,6 +8,8 @@ import React, {
     useEffect,
     useState,
 } from 'react';
+import { db, doc, updateDoc } from '@/firebase/firebase'; // Firebase imports
+import { useAuth } from '@/context/AuthContext'; // Import the Auth context
 
 interface EthersContextType {
     provider: BrowserProvider | null;
@@ -19,7 +21,6 @@ interface EthersContextType {
     getContract: () => Contract | null;
 }
 
-// For Contract Context
 import contractABI from '../abis/MyContract.json';
 const contractAddress = '0xD58C47a068994f637EF8c49bdf08f602fC042b6C';
 
@@ -34,6 +35,8 @@ export const EthersProvider: React.FC<{ children: ReactNode }> = ({
     const [network, setNetwork] = useState<Network | null>(null);
     const [balance, setBalance] = useState<string | null>(null);
 
+    const { user } = useAuth(); // Get the authenticated user from AuthContext
+
     const connectWallet = async () => {
         try {
             const provider = new BrowserProvider(window.ethereum);
@@ -42,11 +45,25 @@ export const EthersProvider: React.FC<{ children: ReactNode }> = ({
             const network = await provider.getNetwork();
             const balance = await provider.getBalance(account);
             const balanceReadable = ethers.formatEther(balance);
+
             setProvider(provider);
             setSigner(signer);
             setAccount(account);
             setNetwork(network);
             setBalance(balanceReadable);
+
+            // Update Firestore with the connected wallet
+            if (user) {
+                const userDocRef = doc(db, 'users', user.uid);
+                console.log('userDocRef:', userDocRef);
+                await updateDoc(userDocRef, {
+                    walletAddress: account,
+                    connectedAt: new Date().toISOString(),
+                });
+                console.log('Wallet address saved to Firestore:', account);
+            } else {
+                console.error('No authenticated user found.');
+            }
         } catch (error) {
             console.error('Error in connectWallet: ', error);
         }
@@ -77,12 +94,24 @@ export const EthersProvider: React.FC<{ children: ReactNode }> = ({
                 const balanceReadable = ethers.formatEther(balance);
 
                 try {
-                    const account = await ethSigner.getAddress();
                     setProvider(ethProvider);
                     setSigner(ethSigner);
                     setAccount(account);
                     setNetwork(network);
                     setBalance(balanceReadable);
+
+                    // Update Firestore if user is authenticated
+                    if (user) {
+                        const userDocRef = doc(db, 'users', user.uid);
+                        await updateDoc(userDocRef, {
+                            walletAddress: account,
+                            connectedAt: new Date().toISOString(),
+                        });
+                        console.log(
+                            'Wallet address updated in Firestore:',
+                            account,
+                        );
+                    }
                 } catch (error) {
                     console.error('Error in connectWallet: ', error);
                 }
@@ -91,7 +120,8 @@ export const EthersProvider: React.FC<{ children: ReactNode }> = ({
             }
         };
         checkConnection();
-    }, []);
+    }, [user]); // Depend on `user` to update when authentication changes
+
     return (
         <EthersContext.Provider
             value={{
