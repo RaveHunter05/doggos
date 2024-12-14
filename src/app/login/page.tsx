@@ -4,7 +4,6 @@ import React, { useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import Image from 'next/image';
 import DoggosIcon from '@/assets/icons/doggos-icon.svg';
-import MetamaskIcon from '@/assets/icons/metamask.svg';
 import GoogleIcon from '@/assets/icons/google.svg';
 import DoggosLoginBackground from '@/assets/backgrounds/login.svg';
 import { useRouter } from 'next/navigation';
@@ -49,6 +48,8 @@ const Login: React.FC = () => {
                             exploring our pet-focused platform.
                         </p>
 
+                        {/* <LoginForm /> */}
+
                         {/* Login Buttons */}
                         <div className="flex flex-col gap-4">
                             <button
@@ -61,18 +62,6 @@ const Login: React.FC = () => {
                                     className="object-cover w-5 h-5"
                                 />
                                 Login with Google
-                            </button>
-
-                            <button
-                                disabled
-                                className="flex items-center justify-center gap-2 px-4 py-2 bg-gray-400 text-white font-medium rounded shadow cursor-not-allowed"
-                            >
-                                <Image
-                                    src={MetamaskIcon}
-                                    alt="Google"
-                                    className="object-cover w-5 h-5"
-                                />
-                                Login with MetaMask (Coming Soon)
                             </button>
                         </div>
                     </div>

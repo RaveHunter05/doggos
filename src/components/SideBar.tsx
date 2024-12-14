@@ -14,6 +14,7 @@ import { FileClock, List, NotebookPen, Wallet } from 'lucide-react';
 import Image from 'next/image';
 import DoggosIcon from '@/assets/icons/doggos-icon.svg';
 import ConnectWalletButton from './ConnectWalletButton';
+import LogoutButton from './Logout';
 
 const items = [
     {
@@ -79,6 +80,7 @@ const AppSideBar: React.FC = () => {
             </SidebarContent>
 
             <SidebarFooter>
+                <LogoutButton />
                 <ConnectWalletButton />
             </SidebarFooter>
         </Sidebar>

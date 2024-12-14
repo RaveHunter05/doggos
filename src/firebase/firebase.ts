@@ -3,8 +3,12 @@ import {
     getAuth,
     GoogleAuthProvider,
     signInWithPopup,
+    signInWithEmailAndPassword,
     signOut,
     onAuthStateChanged,
+    EmailAuthProvider,
+    fetchSignInMethodsForEmail,
+    linkWithCredential,
 } from 'firebase/auth';
 import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
 
@@ -17,17 +21,21 @@ const firebaseConfig = {
     appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-console.log('firebaseConfig:', firebaseConfig);
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
+const emailProvider = EmailAuthProvider;
 
 export {
     auth,
     db,
     googleProvider,
+    emailProvider,
+    fetchSignInMethodsForEmail,
+    linkWithCredential,
     signInWithPopup,
+    signInWithEmailAndPassword,
     signOut,
     onAuthStateChanged,
     doc,

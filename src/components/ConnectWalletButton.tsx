@@ -1,6 +1,6 @@
 'use client';
 
-import { Cat, Copy, Wallet } from 'lucide-react';
+import { Cat, Copy } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
@@ -11,6 +11,8 @@ import {
     PopoverTrigger,
 } from '@radix-ui/react-popover';
 import { useToast } from '@/hooks/use-toast';
+import MetamaskIcon from '@/assets/icons/metamask.svg';
+import Image from 'next/image';
 
 const ConnectWalletButton = () => {
     const { connectWallet, account } = useEthers();
@@ -66,7 +68,11 @@ const ConnectWalletButton = () => {
             ) : (
                 <div className="max-w-4">
                     <Button onClick={() => connectWallet()}>
-                        <Wallet size={24} />
+                        <Image
+                            src={MetamaskIcon}
+                            alt="Google"
+                            className="object-cover w-5 h-5"
+                        />
                         Connect Wallet
                     </Button>
 

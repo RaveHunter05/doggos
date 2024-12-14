@@ -5,6 +5,8 @@ import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import AppSideBar from '@/components/SideBar';
 import { SidebarProvider } from '@/components/ui/sidebar';
+import { Spinner } from './ui/spinner';
+import HydrationGuard from '@/components/HydrationGuard';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
     children,
@@ -22,7 +24,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-screen">
-                <p>Authenticating...</p>
+                <Spinner size="small" show></Spinner>
             </div>
         );
     }
@@ -34,10 +36,12 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
 
     // Render the children if authenticated
     return (
-        <SidebarProvider>
-            <AppSideBar />
-            <main>{children}</main>
-        </SidebarProvider>
+        <HydrationGuard>
+            <SidebarProvider>
+                <AppSideBar />
+                <main>{children}</main>
+            </SidebarProvider>
+        </HydrationGuard>
     );
 };
 

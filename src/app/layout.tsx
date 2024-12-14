@@ -4,7 +4,6 @@ import './globals.css';
 import { EthersProvider } from '@/context/EthersContext';
 import { AuthProvider } from '@/context/AuthContext';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import HydrationGuard from '@/components/HydrationGuard';
 
 const geistSans = localFont({
     src: './fonts/GeistVF.woff',
@@ -34,9 +33,7 @@ export default function RootLayout({
             >
                 <AuthProvider>
                     <EthersProvider>
-                        <HydrationGuard>
-                            <ProtectedRoute>{children}</ProtectedRoute>
-                        </HydrationGuard>
+                        <ProtectedRoute>{children}</ProtectedRoute>
                     </EthersProvider>
                 </AuthProvider>
             </body>
