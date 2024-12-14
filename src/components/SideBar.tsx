@@ -5,21 +5,14 @@ import {
     SidebarFooter,
     SidebarGroup,
     SidebarGroupContent,
-    SidebarGroupLabel,
     SidebarHeader,
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
 } from './ui/sidebar';
-import {
-    Cat,
-    Database,
-    Dog,
-    FileClock,
-    List,
-    NotebookPen,
-    Wallet,
-} from 'lucide-react';
+import { FileClock, List, NotebookPen, Wallet } from 'lucide-react';
+import Image from 'next/image';
+import DoggosIcon from '@/assets/icons/doggos-icon.svg';
 import ConnectWalletButton from './ConnectWalletButton';
 
 const items = [
@@ -49,16 +42,22 @@ const AppSideBar: React.FC = () => {
     return (
         <Sidebar collapsible="icon">
             <SidebarHeader className="flex items-center justify-center">
-                <Dog />
+                <a
+                    href="/"
+                    className="flex items-center justify-start text-2xl font-bold text-gray-900"
+                >
+                    <Image
+                        src={DoggosIcon}
+                        width={80}
+                        height={80}
+                        alt="Doggos Home"
+                    />
+                    <span>Doggos</span>
+                </a>
             </SidebarHeader>
             <SidebarContent>
                 <SidebarGroup>
-                    <SidebarGroupLabel>
-                        <h1 className="text-2xl font-bold text-gray-900">
-                            <a href="/">Doggos</a>
-                        </h1>
-                    </SidebarGroupLabel>
-                    <SidebarGroupContent className="mt-4">
+                    <SidebarGroupContent className="mt-2">
                         <SidebarMenu>
                             {items.map((item) => (
                                 <SidebarMenuItem key={item.title}>

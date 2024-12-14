@@ -21,7 +21,7 @@ import { Spinner } from '@/components/ui/spinner';
 import { InputWithLabel } from '@/components/inputs/InputWithLabel';
 import { SelectInputWithLabel } from '@/components/inputs/SelectInputWithLabel';
 
-const cowSchema = z.object({
+const petSchema = z.object({
     name: z.string(),
     sex: z.string().nonempty(),
     age: z.coerce.number().int().positive(),
@@ -29,7 +29,7 @@ const cowSchema = z.object({
     weight: z.coerce.number().int().positive(),
 });
 
-const MintCows: React.FC = () => {
+const MintPets: React.FC = () => {
     const [loading, setLoading] = useState(false);
 
     const { getContract } = useEthers();
@@ -44,10 +44,10 @@ const MintCows: React.FC = () => {
             status: '',
             weight: 0,
         },
-        resolver: zodResolver(cowSchema),
+        resolver: zodResolver(petSchema),
     });
 
-    const onSubmit = async (values: z.infer<typeof cowSchema>) => {
+    const onSubmit = async (values: z.infer<typeof petSchema>) => {
         const { name, sex, age, status, weight } = values;
         const contract = getContract();
         if (!contract) {
@@ -84,7 +84,7 @@ const MintCows: React.FC = () => {
             console.error('Error in onSubmit: ', error);
             toast({
                 title: 'Error',
-                description: 'Error al registrar la vaca',
+                description: 'Error al registrar la mascota',
             });
         } finally {
             setLoading(false);
@@ -131,7 +131,7 @@ const MintCows: React.FC = () => {
 
                 <div className="mt-8">
                     <Button type="submit">
-                        Crear Vaca
+                        Crear mascota
                         {loading && (
                             <Spinner className="text-white" size="small" show />
                         )}
@@ -142,4 +142,4 @@ const MintCows: React.FC = () => {
     );
 };
 
-export default MintCows;
+export default MintPets;

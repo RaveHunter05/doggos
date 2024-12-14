@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/dialog';
 
 import { NotebookPen } from 'lucide-react';
-import MintCows from '@/components/forms/MintCows';
+import MintPets from '@/components/forms/MintPets';
 
 export default function Registry() {
     return (
@@ -25,18 +25,20 @@ export default function Registry() {
                 <div className="mt-4">
                     <Dialog>
                         <DialogTrigger asChild>
-                            <Button className="">Registrar Nueva Vaca</Button>
+                            <Button className="">
+                                Registrar Nueva Mascota
+                            </Button>
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-[425px]">
                             <DialogHeader>
-                                <DialogTitle> Crear Vaca </DialogTitle>
+                                <DialogTitle> Crear Mascota </DialogTitle>
                                 <DialogDescription>
-                                    Crear NFT de una vaca en la blockchain de
+                                    Crear NFT de una mascota en la blockchain de
                                     Ethereum.
                                 </DialogDescription>
                             </DialogHeader>
 
-                            <MintCows />
+                            <MintPets />
                         </DialogContent>
                     </Dialog>
                 </div>

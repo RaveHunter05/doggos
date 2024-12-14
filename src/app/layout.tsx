@@ -1,11 +1,10 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
-import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
-import AppSideBar from '@/components/SideBar';
-import { cookies } from 'next/headers';
 import { EthersProvider } from '@/context/EthersContext';
-import { Toaster } from '@/components/ui/toaster';
+import { AuthProvider } from '@/context/AuthContext';
+import ProtectedRoute from '@/components/ProtectedRoute';
+import HydrationGuard from '@/components/HydrationGuard';
 
 const geistSans = localFont({
     src: './fonts/GeistVF.woff',
@@ -20,33 +19,26 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
     title: 'Doggos',
-    description: 'Trazabilidad de ganado en la blockchain',
+    description: 'Trazabilidad en la blockchain',
 };
 
 export default function RootLayout({
     children,
-}: Readonly<{
+}: {
     children: React.ReactNode;
-}>) {
-    const cookieStore = cookies();
-    const defaultOpen = cookieStore.get('sidebar:state')?.value === 'true';
+}) {
     return (
         <html lang="en">
             <body
                 className={`${geistSans.variable} ${geistMono.variable} antialiased`}
             >
-                <EthersProvider>
-                    <SidebarProvider defaultOpen={defaultOpen}>
-                        <AppSideBar />
-
-                        <main>
-                            <SidebarTrigger />
-                            {children}
-                        </main>
-
-                    </SidebarProvider>
-                </EthersProvider>
-		<Toaster />
+                <AuthProvider>
+                    <EthersProvider>
+                        <HydrationGuard>
+                            <ProtectedRoute>{children}</ProtectedRoute>
+                        </HydrationGuard>
+                    </EthersProvider>
+                </AuthProvider>
             </body>
         </html>
     );
