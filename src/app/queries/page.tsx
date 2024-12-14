@@ -13,7 +13,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
-import { useEthers } from '@/context/EthersContext';
+import { useWeb3 } from '@/context/EthersContext';
 
 import { useToast } from '@/hooks/use-toast';
 import { Dog } from '@/types/types';
@@ -37,7 +37,7 @@ export default function Queries() {
     const [loading, setLoading] = useState(false);
     const [tokenId, setTokenId] = useState(0);
 
-    const { getContract } = useEthers();
+    const { getContract } = useWeb3();
     const { toast } = useToast();
 
     const [animalData, setAnimalData] = useState<Partial<Dog>>();

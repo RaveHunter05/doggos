@@ -1,6 +1,5 @@
 'use client';
 
-import { Signer, BrowserProvider, Network, ethers, Contract } from 'ethers';
 import React, {
     createContext,
     ReactNode,
@@ -8,58 +7,69 @@ import React, {
     useEffect,
     useState,
 } from 'react';
-
-interface EthersContextType {
-    provider: BrowserProvider | null;
-    signer: Signer | null;
-    account: string | null;
-    network: Network | null;
-    balance: string | null;
-    connectWallet: () => Promise<void>;
-    getContract: () => Contract | null;
-}
-
-// For Contract Context
+import Web3 from 'web3';
 import contractABI from '../abis/MyContract.json';
+
 const contractAddress = '0xD58C47a068994f637EF8c49bdf08f602fC042b6C';
 
-const EthersContext = createContext<EthersContextType | null>(null);
+interface Web3ContextType {
+    web3: Web3 | null;
+    account: string | null;
+    balance: string | null;
+    connectWallet: () => Promise<boolean>;
+    getContract: () => string | null;
+}
 
-export const EthersProvider: React.FC<{ children: ReactNode }> = ({
+const Web3Context = createContext<Web3ContextType | null>(null);
+
+export const Web3Provider: React.FC<{ children: ReactNode }> = ({
     children,
 }) => {
-    const [provider, setProvider] = useState<BrowserProvider | null>(null);
-    const [signer, setSigner] = useState<Signer | null>(null);
+    const [web3, setWeb3] = useState<Web3 | null>(null);
     const [account, setAccount] = useState<string | null>(null);
-    const [network, setNetwork] = useState<Network | null>(null);
     const [balance, setBalance] = useState<string | null>(null);
 
-    const connectWallet = async () => {
+    const connectWallet = async (): Promise<boolean> => {
         try {
-            const provider = new BrowserProvider(window.ethereum);
-            const signer = await provider.getSigner();
-            const account = await signer.getAddress();
-            const network = await provider.getNetwork();
-            const balance = await provider.getBalance(account);
-            const balanceReadable = ethers.formatEther(balance);
-            setProvider(provider);
-            setSigner(signer);
-            setAccount(account);
-            setNetwork(network);
-            setBalance(balanceReadable);
+            if (window.ethereum) {
+                const web3Instance = new Web3(window.ethereum);
+                await window.ethereum.request({
+                    method: 'eth_requestAccounts',
+                });
+
+                const accounts = await web3Instance.eth.getAccounts();
+                const account = accounts[0];
+                const balanceWei = await web3Instance.eth.getBalance(account);
+                const balanceEth = web3Instance.utils.fromWei(
+                    balanceWei,
+                    'ether',
+                );
+
+                setWeb3(web3Instance);
+                setAccount(account);
+                setBalance(balanceEth);
+
+                return true;
+            } else {
+                console.error('Please install MetaMask!');
+                return false;
+            }
         } catch (error) {
             console.error('Error in connectWallet: ', error);
+            return false;
         }
     };
 
-    const getContract = (): Contract | null => {
-        if (!signer) {
-            console.error('Signer not found');
+    const getContract = () => {
+        if (!web3 || !account) {
+            console.error('Web3 or account not initialized');
             return null;
         }
 
         try {
-            return new Contract(contractAddress, contractABI, signer);
+            return new web3.eth.Contract(contractABI, contractAddress, {
+                from: account,
+            });
         } catch (error) {
             console.error('Error in getContract: ', error);
             return null;
@@ -67,52 +77,24 @@ export const EthersProvider: React.FC<{ children: ReactNode }> = ({
     };
 
     useEffect(() => {
-        const checkConnection = async () => {
-            if (window.ethereum) {
-                const ethProvider = new BrowserProvider(window.ethereum);
-                const ethSigner = await ethProvider.getSigner();
-                const network = await ethProvider.getNetwork();
-                const account = await ethSigner.getAddress();
-                const balance = await ethProvider.getBalance(account);
-                const balanceReadable = ethers.formatEther(balance);
-
-                try {
-                    const account = await ethSigner.getAddress();
-                    setProvider(ethProvider);
-                    setSigner(ethSigner);
-                    setAccount(account);
-                    setNetwork(network);
-                    setBalance(balanceReadable);
-                } catch (error) {
-                    console.error('Error in connectWallet: ', error);
-                }
-            } else {
-                console.error('Please install MetaMask!');
-            }
-        };
-        checkConnection();
+        if (window.ethereum) {
+            connectWallet();
+        }
     }, []);
+
     return (
-        <EthersContext.Provider
-            value={{
-                provider,
-                signer,
-                account,
-                network,
-                balance,
-                connectWallet,
-                getContract,
-            }}
+        <Web3Context.Provider
+            value={{ web3, account, balance, connectWallet, getContract }}
         >
             {children}
-        </EthersContext.Provider>
+        </Web3Context.Provider>
     );
 };
 
-export const useEthers = (): EthersContextType => {
-    const context = useContext(EthersContext);
+export const useWeb3 = (): Web3ContextType => {
+    const context = useContext(Web3Context);
     if (!context) {
-        throw new Error('useEthers must be used within a EthersProvider');
+        throw new Error('useWeb3 must be used within a Web3Provider');
     }
     return context;
 };

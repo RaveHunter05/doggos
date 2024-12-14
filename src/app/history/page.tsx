@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from 'react';
 
-import { useEthers } from '@/context/EthersContext';
+import { useWeb3 } from '@/context/EthersContext';
 import { FileClock } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function History() {
-    const { getContract, account } = useEthers();
+    const { getContract, account } = useWeb3();
 
     const [tokensOwned, setTokensOwned] = useState([]);
 

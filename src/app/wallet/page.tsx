@@ -1,11 +1,11 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useEthers } from '@/context/EthersContext';
+import { useWeb3 } from '@/context/EthersContext';
 import { WalletMinimal } from 'lucide-react';
 
 export default function Wallet() {
-    const { account, network, balance } = useEthers();
+    const { account, balance } = useWeb3();
 
     return (
         <div className="relative overflow-x-auto p-6">
@@ -27,18 +27,6 @@ export default function Wallet() {
                         <div className="mt-4">
                             <h3 className="font-bold">Balance:</h3>
                             <p className="text-sm">{balance} ETH</p>
-                        </div>
-
-                        <div className="mt-4">
-                            <h3 className="font-bold">Network:</h3>
-                            <p className="text-sm">{network?.name}</p>
-                        </div>
-
-                        <div className="mt-4">
-                            <h3 className="font-bold">ChainId:</h3>
-                            <p className="text-sm">
-                                {network?.chainId.toString()}
-                            </p>
                         </div>
 
                         <div className="mt-4">

@@ -11,7 +11,7 @@ import { useState } from 'react';
 
 import { z } from 'zod';
 
-import { useEthers } from '@/context/EthersContext';
+import { useWeb3 } from '@/context/EthersContext';
 import { ToastAction } from '@/components/ui/toast';
 import { useToast } from '@/hooks/use-toast';
 
@@ -32,7 +32,7 @@ const cowSchema = z.object({
 const MintCows: React.FC = () => {
     const [loading, setLoading] = useState(false);
 
-    const { getContract } = useEthers();
+    const { getContract } = useWeb3();
 
     const { toast } = useToast();
 

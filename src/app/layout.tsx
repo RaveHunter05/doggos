@@ -1,10 +1,7 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
-import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
-import AppSideBar from '@/components/SideBar';
-import { cookies } from 'next/headers';
-import { EthersProvider } from '@/context/EthersContext';
+import { Web3Provider } from '@/context/EthersContext';
 import { Toaster } from '@/components/ui/toaster';
 
 const geistSans = localFont({
@@ -23,6 +20,9 @@ export const metadata: Metadata = {
     description: 'Trazabilidad de ganado en la blockchain',
 };
 
+import { cookies } from 'next/headers';
+import { SidebarProvider } from '@/components/ui/sidebar';
+
 export default function RootLayout({
     children,
 }: Readonly<{
@@ -35,18 +35,12 @@ export default function RootLayout({
             <body
                 className={`${geistSans.variable} ${geistMono.variable} antialiased`}
             >
-                <EthersProvider>
+                <Web3Provider>
                     <SidebarProvider defaultOpen={defaultOpen}>
-                        <AppSideBar />
-
-                        <main>
-                            <SidebarTrigger />
-                            {children}
-                        </main>
-
+                        <main>{children}</main>
                     </SidebarProvider>
-                </EthersProvider>
-		<Toaster />
+                </Web3Provider>
+                <Toaster />
             </body>
         </html>
     );
